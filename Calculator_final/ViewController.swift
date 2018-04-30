@@ -79,12 +79,89 @@ class ViewController: UIViewController {
         //self.lblDisplay.text=lblDisplay.text!+sender.titleLabel!.text!;
     }
 
+    @IBAction func onClickEditOperation(_ sender: UIButton) {
+        
+        var j = -1;
+        let length = string.characters.count
+        if (string == "" || length < 52){
+        if(!string.contains("=")){
+            if (length >= 1){
+            if (isNumber(string: String(describing: string.characters.last))) {
+                let s = Array(string.characters);
+                for (index, element) in s.enumerated().reversed() {
+
+
+                    if (isAOperation(string: String(element))) {
+                        j = index;
+                        break;
+                    }
+                }
+                if (j == -1) {
+                    if (!string.contains("-")) {
+                        if (string.characters.first == "("){
+                            string = String(string.characters.prefix(1)) + "−" + String(string.characters.suffix(length-1));}
+                        else{
+                            string = "−" + string;}
+                    } else{
+                        string = String(string.characters.suffix(length-1));}
+                }
+                else{
+                let suffix = string.index(string.endIndex, offsetBy: -(length-j-1))
+                let startToOperation = string.characters.prefix(j+1)
+                let sign = startToOperation.last
+                let sign2 = string.characters.prefix(j+2).last
+                let operationToEnd = string.substring(from: suffix)
+                let stringTmp = string.characters.prefix(j)
+                
+                if (j != -1 && sign=="+"){
+                    if (sign2 != "(") {
+                        string = String(stringTmp) + "−" + operationToEnd;
+                        j = -1;
+                }   else {
+                        string = String(string.characters.prefix(j+2)) + "−" + String(string.characters.suffix(length-(j+2)));
+                        j = -1;}
+                }
+                
+                if (j != -1 && sign=="−"){
+                    if (sign2 != "(") {
+                        if (!isNumber(string: String(describing: stringTmp.last)) && stringTmp.last != ")") {
+                            string = String(stringTmp) + operationToEnd;
+                            j = -1;
+                        } else{
+                            string = String(stringTmp) + "+" + operationToEnd;
+                            j = -1;}
+                    }   else {
+                        string = String(string.characters.prefix(j+2)) + "−" + String(string.characters.suffix(length-(j+2)));
+                        j = -1;}
+                }
+                
+                if (j != -1 && (sign=="×" || sign=="÷")) {
+                    if (sign2 != "("){
+                        string = String(startToOperation) + "−" + operationToEnd;}//MoiSua
+                    else{
+                        string = String(string.characters.prefix(j+2)) + "−" + String(string.characters.suffix(length-(j+2)));}
+                }
+                
+                
+                
+                }
+                }
+                    
+                
+            }
+            }
+        }
+            self.lblDisplay.text = string;
+    //}
+
+    }
+
     @IBAction func onclickSolve(_ sender: UIButton) {
     //ProcessConvert(tokens: processString(str: string))
         if(string != ""  && !string.contains("=")) {
             let check = string.characters.last;
             if(isAOperation(string: String(describing: check))||check=="."||dem != 0){// Kiểm tra ký tự cuối cùng có phải là toán tử,"." hoặc dấu mở ngoặc không bằng dấu đóng ngoặc
-                string=string+"="+"ERROR";
+                string=string + "\n" + "="+"ERROR";
                 print("Dữ liệu vào không hợp lệ")
             }
             else {
@@ -99,8 +176,14 @@ class ViewController: UIViewController {
                 while (!stack.array.isEmpty) {
                     kcats.push(stack.pop()!);
                 }
-                let kq = String(Solve(s: kcats));
-                string = string + "=" + kq;
+                let kq = Solve(s: kcats);
+                var tmp = ""
+                if (kq < 0){
+                    tmp =  "−" + String(abs(kq))}
+                else{
+                    tmp =  String(abs(kq))
+                }
+                string = string + "\n" + "=" + tmp;
                 stack.array.removeAll()
                 kcats.array.removeAll()
 
@@ -226,16 +309,16 @@ class ViewController: UIViewController {
             } else {
                 let s = Array(string.characters);
                 for (index, element) in s.enumerated() {
-                    if (element=="=") {
+                    if (element=="\n") {
                         tmp = index;
                         break;
                     }
                 }
                 
-                if(string.characters.prefix(tmp).last==")"){
-                    dem += 1;}
-                if (string.characters.prefix(tmp).last=="("){
-                    dem -= 1;}
+//                if(string.characters.prefix(tmp).last==")"){
+//                    dem += 1;}
+//                if (string.characters.prefix(tmp).last=="("){
+//                    dem -= 1;}
                 string = String(string.characters.prefix(tmp));
                 
             }
@@ -304,14 +387,14 @@ class ViewController: UIViewController {
             else if(string.characters.last != "R"){
                 var tmp:Int;
                 tmp = -1
-                let s = string.components(separatedBy: "");
+                let s = Array(string.characters);
                 for (index, element) in s.enumerated() {
                     if (element=="=") {
                         tmp = index;
                         break;
                     }
                 }
-                let suffixTmp = string.index(string.endIndex, offsetBy: -tmp)
+                let suffixTmp = string.index(string.endIndex, offsetBy: -(length-tmp-1))
                 string = string.substring(from: suffixTmp) + inputSign;
                 flag = true;
             }
@@ -468,8 +551,38 @@ class ViewController: UIViewController {
             s = s + String(i)
         }
         let a = s.characters.count
-        var i = 0;
+        
+        print(Array(s.characters)[0])
+        if(Array(s.characters)[0]=="−"){
+            var i = 2;
+            s1 = s1 + "-" + String(Array(s.characters)[1]);
+            while i<a {
+                let c = Array(s.characters)[i];
+                if(c=="−"&&Array(s.characters)[i+1]=="("){
+                    if (isAOperation(string: String(Array(s.characters)[i-1]))){
+                        s1 = s1 + "-1" + " " + String(Array(s.characters)[i-1]);}
+                    else if( i >= 1&&isNumber(string: String(Array(s.characters)[i-1]))){
+                        s1 = s1 + " " + "+" + " " + "-1"+" " + "×";}
+                    else{
+                        s1 = s1 + "-1" + " " + "×";}
+                }
+                else if((c=="×"||c=="÷")&&Array(s.characters)[i+1]=="−"&&isNumber(string:String(Array(s.characters)[i+2]))) {
+                    s1 = s1 + " " + String(c) + " " + "-" + String(Array(s.characters)[i+2]);
+                    i = i + 2;
+                }
+                else if(c=="("&&Array(s.characters)[i+1]=="−"&&isNumber(string: String(Array(s.characters)[i+2]))) {
+                    s1 = s1 + " " + String(c) + " " + "-" + String(Array(s.characters)[i+2]);
+                    i = i + 2;
+                }
+                else if (!specialChar(string: String(c))){
+                    s1 = s1 + String(c);}
+                else {s1 = s1 + " " + String(c) + " ";}
+                i=i+1
+            }
 
+        }
+        else{
+        var i = 0;
         while i<a {
                 let c = Array(s.characters)[i];
                 if(c=="−"&&Array(s.characters)[i+1]=="("){
@@ -492,6 +605,7 @@ class ViewController: UIViewController {
                     s1 = s1 + String(c);}
                 else {s1 = s1 + " " + String(c) + " ";}
                 i=i+1
+        }
         }
 
         s1 = s1.condenseWhitespace()
