@@ -15,6 +15,10 @@ extension String {
     }
     var count: Int { return characters.count }
 }
+extension FloatingPoint {
+    var degreesToRadians: Self { return self * .pi / 180 }
+    var radiansToDegrees: Self { return self * 180 / .pi }
+}
 
 extension String {
     func condenseWhitespace() -> String {
@@ -50,9 +54,253 @@ class ViewController: UIViewController {
     var string="";
     var flag=true;
     var dem=0;
+    var dec = true;
+    @IBOutlet weak var lblRad: UIButton!
+    @IBOutlet weak var lblDec: UIButton!
     @IBOutlet weak var lblDisplay: UILabel!
+    @IBAction func changeOption(_ sender: UIButton)
+    {
+        let name = sender.titleLabel?.text
+        if(name == "Degrees")
+        {
+            sender.titleLabel?.textColor = UIColor.red;
+            lblRad.titleLabel?.textColor = UIColor.black;
+            dec = true
+        }
+        else if (name=="Radians"){
+            self.lblRad.titleLabel?.textColor = UIColor.red
+            lblDec.titleLabel?.textColor = UIColor.black;
+
+            dec = false
+        }
+    }
+    @IBAction func onClickPi(_ sender: UIButton) {
+        if(!string.contains("=")){
+        if (string==""||string.characters.count<65){
+            if (string.characters.count>=1){
+                if (string.characters.last!==")"||string.characters.last!=="π" || string.characters.last!=="." || isNumber(string: String(describing: string.characters.last))){
+                    return;}
+            }
+            if (string=="" && sender.titleLabel!.text!==""){
+                return;}
+            else {
+                if (lblDisplay.text!==""){
+                    string = sender.titleLabel!.text!
+                    
+                }
+                else{
+                    string = string + sender.titleLabel!.text!
+                }
+                
+            }
+            self.lblDisplay.text=string;
+            
+            
+        }
+        else{
+            print("error")
+        }
+        }else{
+            string="π"
+            self.lblDisplay.text=string;
+        }
+        
+    }
+
+    @IBAction func onClickSinCosTanLn(_ sender: UIButton) {
+        var j = -1;
+        let arr = Array(string.characters)
+        let length = string.characters.count
+        let name = sender.titleLabel?.text!
+        var pi = (Double.pi)/180
+        if(!dec){
+            pi = 1
+        }
+        if !string.contains("="){
+        if(length>=1 && string != "-"){
+            if(String(arr[length-1]).isNumber){
+                for (i,element) in arr.enumerated().reversed(){
+                    if isAOperation(string: String(element)) {
+                        j = i;
+                        break
+                    }
+                }
+                let suffix = string.index(string.endIndex, offsetBy: -(length-j-1))
+                let num = Double(string.substring(from: suffix))
+                let stringTmp = string.substring(to: suffix)
+                if name == "sin" {
+                    let si = sin(num!*pi)
+                    let roun = Double(round(10000*si)/10000)
+                    string = stringTmp + String(describing: roun)
+                    if String(roun).contains("."){
+                        flag = false
+                    }
+                }else if name == "cos" {
+                    let si = cos(num!*pi)
+                    let roun = Double(round(10000*si)/10000)
+                    string = stringTmp + String(roun)
+                    if String(roun).contains("."){
+                        flag = false
+                    }
+                }
+                else if name == "tan" {
+                    let si = tan(num!*pi)
+                    let roun = Double(round(10000*si)/10000)
+                    string = stringTmp + String(roun)
+                    if String(roun).contains("."){
+                        flag = false
+                    }
+                }
+                else if name == "ln"{
+                    let si = log(num!)
+                    let roun = Double(round(10000*si)/10000)
+                    string = stringTmp + String(roun)
+                    if String(roun).contains("."){
+                        flag = false
+                    }
+                }
+            }
+            
+        }else if string == ""{
+            let num = Double(0);
+            if name == "sin" {
+                let si = sin(num*pi)
+                let roun = Double(round(10000*si)/10000)
+                string = String(describing: roun)
+                if String(roun).contains("."){
+                    flag = false
+                }
+            }else if name == "cos" {
+                let si = cos(num*pi)
+                let roun = Double(round(10000*si)/10000)
+                string = String(roun)
+                if String(roun).contains("."){
+                    flag = false
+                }
+            }
+            else if name == "tan" {
+                let si = tan(num*pi)
+                let roun = Double(round(10000*si)/10000)
+                string = String(roun)
+                if String(roun).contains("."){
+                    flag = false
+                }
+            }
+            else if name == "ln"{
+                let si = log(num)
+                let roun = Double(round(10000*si)/10000)
+                string = String(roun)
+                if String(roun).contains("."){
+                    flag = false
+                }
+            }
+            
+        }
+        } else if !string.contains("R") && !string.contains("inf"){
+            for (i,element) in arr.enumerated().reversed(){
+                if element=="=" {
+                    j = i;
+                    break;
+                }
+            }
+            let a = String(string.characters.suffix(j-1))
+            let num = Double(a)
+            if name == "sin" {
+                let si = sin(num!*pi)
+                let roun = Double(round(10000*si)/10000)
+                string = String(describing: roun)
+                if String(roun).contains("."){
+                    flag = false
+                }
+            }else if name == "cos" {
+                let si = cos(num!*pi)
+                let roun = Double(round(10000*si)/10000)
+                string = String(roun)
+                if String(roun).contains("."){
+                    flag = false
+                }
+            }
+            else if name == "tan" {
+                let si = tan(num!*pi)
+                let roun = Double(round(10000*si)/10000)
+                string = String(roun)
+                if String(roun).contains("."){
+                    flag = false
+                }
+            }
+            else if name == "ln"{
+                let si = log(num!)
+                let roun = Double(round(10000*si)/10000)
+                string = String(roun)
+                if String(roun).contains("."){
+                    flag = false
+                }
+            }
+
+            
+        }
+
+        if length>1 && arr[length-1] == ")"{
+            for (i,element) in arr.enumerated().reversed(){
+                if element == "(" {
+                    j = i;
+                    break
+                }
+            }
+            let suffix = string.index(string.endIndex, offsetBy: -(length-j))
+            let num = string.substring(from: suffix)
+            let stringTmp = string.substring(to: suffix)
+            var stack = Stack<String>();
+            var kcats = Stack<String>();
+            let a = Infix2Postfix(infix: num);
+            var line = a.components(separatedBy: " ")
+            for i in 0..<line.count-1 {
+                stack.push(line[i]);
+            }
+            while (!stack.array.isEmpty) {
+                kcats.push(stack.pop()!);
+            }
+            let kq = Solve(s: kcats);
+            stack.array.removeAll()
+            kcats.array.removeAll()
+            if name == "sin" {
+                let si = sin(kq*pi)
+                let roun = Double(round(10000*si)/10000)
+                string =    stringTmp + String(describing: roun)
+                if String(roun).contains("."){
+                    flag = false
+                }
+            }else if name == "cos" {
+                let si = cos(kq*pi)
+                let roun = Double(round(10000*si)/10000)
+                string = stringTmp + String(roun)
+                if String(roun).contains("."){
+                    flag = false
+                }
+            }
+            else if name == "tan" {
+                let si = tan(kq*pi)
+                let roun = Double(round(10000*si)/10000)
+                string = stringTmp + String(roun)
+                if String(roun).contains("."){
+                    flag = false
+                }
+            }
+            else if name == "ln"{
+                let si = log(kq)
+                let roun = Double(round(10000*si)/10000)
+                string = stringTmp + String(roun)
+                if String(roun).contains("."){
+                    flag = false
+                }
+            }
+            
+        }
+        self.lblDisplay.text = string
+    }
     @IBAction func onClickNumber(_ sender: UIButton) {
-        if (string==""||string.characters.count<92){
+        if(!string.contains("=")){
+        if (string==""||string.characters.count<65){
             if (string.characters.count>=1){
                 if (string.characters.last!==")"){
                     return;}
@@ -75,6 +323,10 @@ class ViewController: UIViewController {
         }
         else{
             print("error")
+        }
+        }else{
+            string=sender.titleLabel!.text!
+            self.lblDisplay.text=string;
         }
         //self.lblDisplay.text=lblDisplay.text!+sender.titleLabel!.text!;
     }
@@ -293,7 +545,6 @@ class ViewController: UIViewController {
                             break;
                         }
                     }
-                    print(j)
                     if (j != -1) {
                         let suffix2 = stringTmp.index(stringTmp.endIndex, offsetBy: -j)
                         print(stringTmp.substring(from: suffix2))
@@ -384,7 +635,7 @@ class ViewController: UIViewController {
                 }
             }
             //khi string không tồn tại dấu =;
-            else if(string.characters.last != "R"){
+            else if(string.characters.last != "R" && string.characters.last != "f" ){
                 var tmp:Int;
                 tmp = -1
                 let s = Array(string.characters);
@@ -463,21 +714,26 @@ class ViewController: UIViewController {
   
     
     func isAOperation(string:String)->Bool {
-        if (string.contains("+") || string.contains("−") || string.contains("×") || string.contains("÷")){
+        if (string.contains("+") || string.contains("−") || string.contains("×") || string.contains("÷") || string.contains("^")){
             return true;
         }
         return false;
         
     }
     func specialChar(string:String)->Bool {
-        if (string=="+" || string=="−" || string=="×" || string=="÷" || string=="(" || string==")"){
+        if (string=="+" || string=="−" || string=="×" || string=="÷" || string=="(" || string==")" ||
+            string=="^"){
             return true;
         }
         return false;
         
     }
     func GetPriority(op:String)->Int{
-        if (op=="×"  || op=="÷" ){
+        if (op=="^")
+        {
+            return 3
+        }
+        if (op=="×"  || op=="÷"){
             return 2;}
         if (op=="+"  || op=="−"){
             return 1;}
@@ -552,7 +808,6 @@ class ViewController: UIViewController {
         }
         let a = s.characters.count
         
-        print(Array(s.characters)[0])
         if(Array(s.characters)[0]=="−"){
             var i = 2;
             s1 = s1 + "-" + String(Array(s.characters)[1]);
@@ -575,7 +830,12 @@ class ViewController: UIViewController {
                     i = i + 2;
                 }
                 else if (!specialChar(string: String(c))){
-                    s1 = s1 + String(c);}
+                    if(c == "π"){
+                        s1 = s1 + String(Double.pi)
+                    }
+                    else{
+                        s1 = s1 + String(c);}
+                }
                 else {s1 = s1 + " " + String(c) + " ";}
                 i=i+1
             }
@@ -602,7 +862,12 @@ class ViewController: UIViewController {
                     i = i + 2;
                     }
                 else if (!specialChar(string: String(c))){
+                    if(c == "π"){
+                        s1 = s1 + String(Double.pi)
+                    }
+                    else{
                     s1 = s1 + String(c);}
+                }
                 else {s1 = s1 + " " + String(c) + " ";}
                 i=i+1
         }
@@ -622,7 +887,7 @@ class ViewController: UIViewController {
             } else {
                 var y = stack.pop();
                 let x = stack.pop();
-                if(isNumber(string: String(describing: x))) {
+                if(isNumber(string: String(describing: x)) || String(describing: x).contains("inf")) {
                     let sign = String(describing: tmp.pop())
                     switch (sign) {
                     case let str where str.contains("+"):
@@ -636,6 +901,9 @@ class ViewController: UIViewController {
                         break;
                     case let str where str.contains("÷"):
                         y = x! / y!;
+                        break;
+                    case let str where str.contains("^"):
+                        y = pow(x!, y!)
                         break;
                     default:
                         break
