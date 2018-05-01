@@ -248,7 +248,7 @@
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="0" textAlignment="right" lineBreakMode="wordWrap" numberOfLines="5" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="y1K-NV-vPZ">
-                                <rect key="frame" x="0.0" y="28" width="320" height="171"/>
+                                <rect key="frame" x="0.0" y="52" width="320" height="194"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" red="0.95883257769999997" green="0.95883257769999997" blue="0.95883257769999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="24"/>
@@ -351,12 +351,21 @@
                                     <action selector="onClickOperator:" destination="BYZ-38-t0r" eventType="touchUpInside" id="zqH-Bt-9gC"/>
                                 </connections>
                             </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sIg-yZ-s9O">
+                                <rect key="frame" x="0.0" y="20" width="320" height="32"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" red="0.95883257769999997" green="0.95883257769999997" blue="0.95883257769999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" red="0.56785915099999995" green="0.70116077710000002" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     </view>
                     <connections>
                         <outlet property="lblDec" destination="PTR-Oj-yMv" id="xqM-jR-8vy"/>
                         <outlet property="lblDisplay" destination="y1K-NV-vPZ" id="fCx-pD-diW"/>
+                        <outlet property="lblHeader" destination="sIg-yZ-s9O" id="uQB-9Z-exU"/>
                         <outlet property="lblRad" destination="5cQ-F2-XLF" id="NYP-6N-K3l"/>
                     </connections>
                 </viewController>

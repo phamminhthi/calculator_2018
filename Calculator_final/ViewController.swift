@@ -15,10 +15,6 @@ extension String {
     }
     var count: Int { return characters.count }
 }
-extension FloatingPoint {
-    var degreesToRadians: Self { return self * .pi / 180 }
-    var radiansToDegrees: Self { return self * 180 / .pi }
-}
 
 extension String {
     func condenseWhitespace() -> String {
@@ -58,6 +54,7 @@ class ViewController: UIViewController {
     @IBOutlet weak var lblRad: UIButton!
     @IBOutlet weak var lblDec: UIButton!
     @IBOutlet weak var lblDisplay: UILabel!
+    @IBOutlet weak var lblHeader: UILabel!
     @IBAction func changeOption(_ sender: UIButton)
     {
         let name = sender.titleLabel?.text
@@ -65,14 +62,17 @@ class ViewController: UIViewController {
         {
             sender.titleLabel?.textColor = UIColor.red;
             lblRad.titleLabel?.textColor = UIColor.black;
+            lblDec.isEnabled=true
             dec = true
         }
-        else if (name=="Radians"){
-            self.lblRad.titleLabel?.textColor = UIColor.red
+        else{
+            lblRad.setTitleColor(UIColor.red, for: UIControlState.normal)
             lblDec.titleLabel?.textColor = UIColor.black;
 
+            lblRad.isEnabled=true
             dec = false
         }
+        
     }
     @IBAction func onClickPi(_ sender: UIButton) {
         if(!string.contains("=")){
@@ -118,7 +118,7 @@ class ViewController: UIViewController {
         }
         if !string.contains("="){
         if(length>=1 && string != "-"){
-            if(String(arr[length-1]).isNumber){
+            if(String(arr[length-1]).isNumber || arr[length-1]=="π"){
                 for (i,element) in arr.enumerated().reversed(){
                     if isAOperation(string: String(element)) {
                         j = i;
@@ -126,12 +126,19 @@ class ViewController: UIViewController {
                     }
                 }
                 let suffix = string.index(string.endIndex, offsetBy: -(length-j-1))
-                let num = Double(string.substring(from: suffix))
+                var num = Double(string.substring(from: suffix))
+                var value:String = "\(num ?? 0)"
+                if arr[length-1]=="π" {
+                    num = Double.pi
+                    value = "π"
+                }
+                
                 let stringTmp = string.substring(to: suffix)
                 if name == "sin" {
                     let si = sin(num!*pi)
                     let roun = Double(round(10000*si)/10000)
                     string = stringTmp + String(describing: roun)
+                    self.lblHeader.text = name! + "(" + value + ")=" + String(roun);
                     if String(roun).contains("."){
                         flag = false
                     }
@@ -139,6 +146,7 @@ class ViewController: UIViewController {
                     let si = cos(num!*pi)
                     let roun = Double(round(10000*si)/10000)
                     string = stringTmp + String(roun)
+                    self.lblHeader.text = name! + "(" + value + ")=" + String(roun);
                     if String(roun).contains("."){
                         flag = false
                     }
@@ -147,6 +155,7 @@ class ViewController: UIViewController {
                     let si = tan(num!*pi)
                     let roun = Double(round(10000*si)/10000)
                     string = stringTmp + String(roun)
+                    self.lblHeader.text = name! + "(" + value + ")=" + String(roun);
                     if String(roun).contains("."){
                         flag = false
                     }
@@ -155,6 +164,7 @@ class ViewController: UIViewController {
                     let si = log(num!)
                     let roun = Double(round(10000*si)/10000)
                     string = stringTmp + String(roun)
+                    self.lblHeader.text = name! + "(" + value + ")=" + String(roun);
                     if String(roun).contains("."){
                         flag = false
                     }
@@ -167,6 +177,7 @@ class ViewController: UIViewController {
                 let si = sin(num*pi)
                 let roun = Double(round(10000*si)/10000)
                 string = String(describing: roun)
+                self.lblHeader.text = name! + "(0)=" + String(roun);
                 if String(roun).contains("."){
                     flag = false
                 }
@@ -174,6 +185,7 @@ class ViewController: UIViewController {
                 let si = cos(num*pi)
                 let roun = Double(round(10000*si)/10000)
                 string = String(roun)
+                self.lblHeader.text = name! + "(0)=" + String(roun);
                 if String(roun).contains("."){
                     flag = false
                 }
@@ -182,6 +194,7 @@ class ViewController: UIViewController {
                 let si = tan(num*pi)
                 let roun = Double(round(10000*si)/10000)
                 string = String(roun)
+                self.lblHeader.text = name! + "(0)=" + String(roun);
                 if String(roun).contains("."){
                     flag = false
                 }
@@ -190,6 +203,7 @@ class ViewController: UIViewController {
                 let si = log(num)
                 let roun = Double(round(10000*si)/10000)
                 string = String(roun)
+                self.lblHeader.text = name! + "(0)=" + String(roun);
                 if String(roun).contains("."){
                     flag = false
                 }
@@ -209,6 +223,7 @@ class ViewController: UIViewController {
                 let si = sin(num!*pi)
                 let roun = Double(round(10000*si)/10000)
                 string = String(describing: roun)
+                self.lblHeader.text = name! + a + "=" + String(roun);
                 if String(roun).contains("."){
                     flag = false
                 }
@@ -267,12 +282,14 @@ class ViewController: UIViewController {
                 let si = sin(kq*pi)
                 let roun = Double(round(10000*si)/10000)
                 string =    stringTmp + String(describing: roun)
+                self.lblHeader.text = name!+num+"="+String(describing: roun)
                 if String(roun).contains("."){
                     flag = false
                 }
             }else if name == "cos" {
                 let si = cos(kq*pi)
                 let roun = Double(round(10000*si)/10000)
+                self.lblHeader.text = name!+num+"="+String(describing: roun)
                 string = stringTmp + String(roun)
                 if String(roun).contains("."){
                     flag = false
@@ -282,6 +299,7 @@ class ViewController: UIViewController {
                 let si = tan(kq*pi)
                 let roun = Double(round(10000*si)/10000)
                 string = stringTmp + String(roun)
+                self.lblHeader.text = name!+num+"="+String(describing: roun)
                 if String(roun).contains("."){
                     flag = false
                 }
@@ -290,6 +308,7 @@ class ViewController: UIViewController {
                 let si = log(kq)
                 let roun = Double(round(10000*si)/10000)
                 string = stringTmp + String(roun)
+                self.lblHeader.text = name!+num+"="+String(describing: roun)
                 if String(roun).contains("."){
                     flag = false
                 }
@@ -667,6 +686,7 @@ class ViewController: UIViewController {
         flag=true
         dem=0
         self.lblDisplay.text="0"
+        self.lblHeader.text = ""
         
     }
     @IBAction func onClickDot(_ sender: UIButton) {
