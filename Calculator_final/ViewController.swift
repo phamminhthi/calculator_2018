@@ -210,20 +210,20 @@ class ViewController: UIViewController {
             }
             
         }
-        } else if !string.contains("R") && !string.contains("inf"){
+        } else if !string.contains("R") && !string.contains("inf") && string.contains("="){
             for (i,element) in arr.enumerated().reversed(){
                 if element=="=" {
                     j = i;
                     break;
                 }
             }
-            let a = String(string.characters.suffix(j-1))
+            let a = String(string.characters.suffix(length-j-1))
             let num = Double(a)
             if name == "sin" {
                 let si = sin(num!*pi)
                 let roun = Double(round(10000*si)/10000)
                 string = String(describing: roun)
-                self.lblHeader.text = name! + a + "=" + String(roun);
+                self.lblHeader.text = name! + "(" + a + ")" + "=" + String(roun);
                 if String(roun).contains("."){
                     flag = false
                 }
@@ -231,6 +231,7 @@ class ViewController: UIViewController {
                 let si = cos(num!*pi)
                 let roun = Double(round(10000*si)/10000)
                 string = String(roun)
+                self.lblHeader.text = name! + "(" + a + ")" + "=" + String(roun);
                 if String(roun).contains("."){
                     flag = false
                 }
@@ -239,6 +240,7 @@ class ViewController: UIViewController {
                 let si = tan(num!*pi)
                 let roun = Double(round(10000*si)/10000)
                 string = String(roun)
+                self.lblHeader.text = name! + "(" + a + ")" + "=" + String(roun);
                 if String(roun).contains("."){
                     flag = false
                 }
@@ -247,6 +249,7 @@ class ViewController: UIViewController {
                 let si = log(num!)
                 let roun = Double(round(10000*si)/10000)
                 string = String(roun)
+                self.lblHeader.text = name! + "(" + a + ")" + "=" + String(roun);
                 if String(roun).contains("."){
                     flag = false
                 }
@@ -696,6 +699,9 @@ class ViewController: UIViewController {
                 if (isAOperation(string:String(describing: string.characters.last))){
                     return;
                 }
+            }
+            if string.contains("="){
+                return;
             }
             if (string=="") {
                 string = "0" + sender.titleLabel!.text!
