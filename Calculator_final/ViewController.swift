@@ -120,7 +120,7 @@ class ViewController: UIViewController {
         if(length>=1 && string != "-"){
             if(String(arr[length-1]).isNumber || arr[length-1]=="π"){
                 for (i,element) in arr.enumerated().reversed(){
-                    if isAOperation(string: String(element)) {
+                    if isAOperation(string: String(element)) || element=="(" {
                         j = i;
                         break
                     }
@@ -263,9 +263,10 @@ class ViewController: UIViewController {
                 if tmp != 0 {
                     if element == "("{
                         tmp = tmp-1
+                        continue
                     }
                 }
-                else if element == "(" && tmp==0 {
+                if element == "(" && tmp==0 {
                     j = i;
                     break
                 }
