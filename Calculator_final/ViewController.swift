@@ -257,9 +257,15 @@ class ViewController: UIViewController {
 
             
         }
+        var tmp = dem
         if length>1 && arr[length-1] == ")"  {
             for (i,element) in arr.enumerated().reversed(){
-                if element == "(" {
+                if tmp != 0 {
+                    if element == "("{
+                        tmp = tmp-1
+                    }
+                }
+                else if element == "(" && tmp==0 {
                     j = i;
                     break
                 }
@@ -714,6 +720,9 @@ class ViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
 
+    /*function use to check last character is number
+     *return true if it's number
+     */
     func isNumber(string:String)->Bool {
 
         if (string.contains("0")||string.contains("1")||string.contains("2")||string.contains("3")||string.contains("4")||string.contains("5")||string.contains("6")||string.contains("7")||string.contains("8")||string.contains("9")){
@@ -725,7 +734,9 @@ class ViewController: UIViewController {
 
     }
   
-    
+    /*function use to check last character is a operator
+     *return true if it's operator (+,−,×,÷)
+     */
     func isAOperation(string:String)->Bool {
         if (string.contains("+") || string.contains("−") || string.contains("×") || string.contains("÷") || string.contains("^")){
             return true;
@@ -733,6 +744,9 @@ class ViewController: UIViewController {
         return false;
         
     }
+    /*function use to check last character is not number
+     *return true if it's operator (+,−,×,÷) or parenthesis
+     */
     func specialChar(string:String)->Bool {
         if (string=="+" || string=="−" || string=="×" || string=="÷" || string=="(" || string==")" ||
             string=="^"){
@@ -741,6 +755,9 @@ class ViewController: UIViewController {
         return false;
         
     }
+    /*function use to get Priority for operator before put it into stack
+     *
+     */
     func GetPriority(op:String)->Int{
         if (op=="^")
         {
@@ -753,6 +770,10 @@ class ViewController: UIViewController {
         return 0;
 
     }
+    /*function use to change expressions to Postfix style
+     *input:expressions with infix style
+     *output: expressions with postfix style
+     */
     func Infix2Postfix(infix:String)->String{
         let tokens:[String] = processString(str: infix);
         return ProcessConvert(tokens: tokens);
@@ -811,6 +832,11 @@ class ViewController: UIViewController {
         return result;
     }
 
+    /*function use to convert an Infix expression to seasoned Prefix
+     The expression can Infix entering excess whitespace, characters inappropriate or misspelled syntax.
+     This section of your view normalized string
+     Ex:Merge adjacent digits of the number (operand), separation of the operator, separated from each other by a space.
+     */
     func processString(str:String)->[String]{
         var s1 = "";
         var elementMath:[String]! = [];
@@ -821,27 +847,34 @@ class ViewController: UIViewController {
         }
         let a = s.characters.count
         
-        if(Array(s.characters)[0]=="−"){
+        if(Array(s.characters)[0]=="−"){// first character is "-"
             var i = 2;
-            s1 = s1 + "-" + String(Array(s.characters)[1]);
-            while i<a {
+            s1 = s1 + "-" + String(Array(s.characters)[1]); //Merge first character and seconds character
+            while i<a {// start loop without first character and seconds character
                 let c = Array(s.characters)[i];
-                if(c=="−"&&Array(s.characters)[i+1]=="("){
+                if(c=="−"&&Array(s.characters)[i+1]=="("){// if current character is "-" and next character is "("
+                    //if previous character is operantor
+                    //Ex: "2×-(5+3" ->"-1 ×"
                     if (isAOperation(string: String(Array(s.characters)[i-1]))){
                         s1 = s1 + "-1" + " " + String(Array(s.characters)[i-1]);}
+                    //if previous character is number
+                    //Ex:5-(5+2) ->"5 + -1 × ( 5 + 2 )"
                     else if( i >= 1&&isNumber(string: String(Array(s.characters)[i-1]))){
                         s1 = s1 + " " + "+" + " " + "-1"+" " + "×";}
-                    else{
+                    else{//Ex: "-(5+3)" ->"-1 × ( 5 + 3 )"
                         s1 = s1 + "-1" + " " + "×";}
                 }
                 else if((c=="×"||c=="÷")&&Array(s.characters)[i+1]=="−"&&isNumber(string:String(Array(s.characters)[i+2]))) {
                     s1 = s1 + " " + String(c) + " " + "-" + String(Array(s.characters)[i+2]);
                     i = i + 2;
                 }
+                //if current character is "(" and next character is "-" and next character is number
+                //Ex:(-5 ->" ( -5"
                 else if(c=="("&&Array(s.characters)[i+1]=="−"&&isNumber(string: String(Array(s.characters)[i+2]))) {
                     s1 = s1 + " " + String(c) + " " + "-" + String(Array(s.characters)[i+2]);
                     i = i + 2;
                 }
+                // if current character is  not specialChar, Merge adjacent digits
                 else if (!specialChar(string: String(c))){
                     if(c == "π"){
                         s1 = s1 + String(Double.pi)
@@ -886,7 +919,7 @@ class ViewController: UIViewController {
         }
         }
 
-        s1 = s1.condenseWhitespace()
+        s1 = s1.condenseWhitespace()//removed Whitespace
         elementMath=s1.components(separatedBy: " ")
         return elementMath!
         
