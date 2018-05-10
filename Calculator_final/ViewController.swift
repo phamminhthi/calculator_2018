@@ -210,7 +210,7 @@ class ViewController: UIViewController {
             }
             
         }
-        } else if !string.contains("R") && !string.contains("inf") && string.contains("="){
+        } else if !string.contains("R") && !string.contains("inf") && string.contains("=") && dem==0{
             for (i,element) in arr.enumerated().reversed(){
                 if element=="=" {
                     j = i;
@@ -257,16 +257,27 @@ class ViewController: UIViewController {
 
             
         }
-
-        if length>1 && arr[length-1] == ")"{
+        if length>1 && arr[length-1] == ")"  {
             for (i,element) in arr.enumerated().reversed(){
                 if element == "(" {
                     j = i;
                     break
                 }
             }
-            let suffix = string.index(string.endIndex, offsetBy: -(length-j))
+            var suffix = string.index(string.endIndex, offsetBy: -(length-j))
+            if dem == 0{
+                var k = 0
+                for (i,element) in arr.enumerated(){
+                    if element == "(" {
+                        k = i;
+                        break
+                    }
+                }
+                suffix = string.index(string.startIndex, offsetBy: k)
+            
+            }
             let num = string.substring(from: suffix)
+            print(num)
             let stringTmp = string.substring(to: suffix)
             var stack = Stack<String>();
             var kcats = Stack<String>();
@@ -322,9 +333,9 @@ class ViewController: UIViewController {
     }
     @IBAction func onClickNumber(_ sender: UIButton) {
         if(!string.contains("=")){
-        if (string==""||string.characters.count<65){
+        if (string==""||string.characters.count<52){
             if (string.characters.count>=1){
-                if (string.characters.last!==")"){
+                if (string.characters.last!==")" || string.characters.last!=="π" ){
                     return;}
             }
             if (string=="" && sender.titleLabel!.text!==""){
@@ -431,7 +442,6 @@ class ViewController: UIViewController {
     }
 
     @IBAction func onclickSolve(_ sender: UIButton) {
-    //ProcessConvert(tokens: processString(str: string))
         if(string != ""  && !string.contains("=")) {
             let check = string.characters.last;
             if(isAOperation(string: String(describing: check))||check=="."||dem != 0){// Kiểm tra ký tự cuối cùng có phải là toán tử,"." hoặc dấu mở ngoặc không bằng dấu đóng ngoặc
@@ -460,42 +470,25 @@ class ViewController: UIViewController {
                 string = string + "\n" + "=" + tmp;
                 stack.array.removeAll()
                 kcats.array.removeAll()
+                
+                
 
             }
             
             
             self.lblDisplay.text = string;
         }
-//        else {
-//            int tmp=-1;
-//            char[] s;
-//            s = string.toCharArray();
-//            for (int i = string.length() - 1; i >= 1; i--) {
-//                String ab = String.valueOf(s[i]);
-//                if (ab.equals("=")) {
-//                    tmp = i;
-//                    break;
-//                }
-//            }
-//            if (string.contains("=") && (isAOperator(string.substring(tmp - 1,tmp)) || string.substring(tmp - 1,tmp).equals(".") || dem != 0))
-//            print("Dữ liệu vào không hợp lệ")
-//        }
 
     
     }
 
     @IBAction func onClickParenthesis(_ sender: UIButton) {
-        //let inputSign = sender.titleLabel!.text!
         let length = string.characters.count
         let lastChar = string.characters.last
-        //let suffix = string.index(string.startIndex, offsetBy: length-1)
-        //let stringWithoutLastChar = string.substring(to: suffix)
-        //let count = stringWithoutLastChar.characters.count
-        //let ndLastChar = stringWithoutLastChar.characters.last
         if(!string.contains("=")) {
             if (string == "" || length < 52) {// nếu chuỗi là null hoặc nhỏ hơn 52 ký tự (giới hạn 52 ký tự)
                 if (length >= 1){
-                    if (lastChar=="."){
+                    if (lastChar=="." || lastChar=="π"){
                         return;}}
                 if (string == "") {
                     string = "(";
@@ -508,11 +501,9 @@ class ViewController: UIViewController {
                 }
                 if (dem > 0 && (isNumber(string: String(describing: lastChar)) || lastChar==")")) {
                     string = string + ")";
-                    if (dem != 0){
-                        dem=dem-1;}
+                    dem=dem-1;
                 }
             }
-            //setTextDislay(txv);
             self.lblDisplay.text=string
             
         }
@@ -588,10 +579,6 @@ class ViewController: UIViewController {
                     }
                 }
                 
-//                if(string.characters.prefix(tmp).last==")"){
-//                    dem += 1;}
-//                if (string.characters.prefix(tmp).last=="("){
-//                    dem -= 1;}
                 string = String(string.characters.prefix(tmp));
                 
             }
@@ -693,7 +680,7 @@ class ViewController: UIViewController {
         
     }
     @IBAction func onClickDot(_ sender: UIButton) {
-        if ((string=="" || string.characters.count<63)) {
+        if ((string=="" || string.characters.count<52)) {
 
             if (string.characters.count>0){
                 if (isAOperation(string:String(describing: string.characters.last))){
