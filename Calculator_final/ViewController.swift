@@ -260,15 +260,28 @@ class ViewController: UIViewController {
         var tmp = dem
         if length>1 && arr[length-1] == ")"  {
             for (i,element) in arr.enumerated().reversed(){
-                if tmp != 0 {
+                if dem >= 2 {
                     if element == "("{
+                        j = i;
+                        break
+                    }
+                    
+                }
+                else{
+                if tmp != 0 {
+                    if element == "(" && tmp != 1{
                         tmp = tmp-1
                         continue
                     }
+                    else if element == "(" && tmp == 1 {
+                        tmp = tmp-1
+                    }
+                    
                 }
                 if element == "(" && tmp==0 {
                     j = i;
                     break
+                }
                 }
             }
             var suffix = string.index(string.endIndex, offsetBy: -(length-j))
